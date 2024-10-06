@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Registrazione = () => {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("")
-  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
@@ -24,14 +24,13 @@ const Registrazione = () => {
       username: username,
       email: email,
       phone: phone,
-      password: password,
     };
 
     try {
-      const url = 'https://66fc0e66c3a184a84d15e4f0.mockapi.io/Users';
+      const url = "https://66fc0e66c3a184a84d15e4f0.mockapi.io/Users";
       const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
       });
 
@@ -44,12 +43,14 @@ const Registrazione = () => {
           // Trasformo i dati ricevuti dal backend in stringa, usando JSON.stringify
           const resultToString = JSON.stringify(result);
           // Salvo i dati dell'utente nel localStorage
-          localStorage.setItem('userData', resultToString);
+          localStorage.setItem("userData", resultToString);
           // Navigo verso la homepage
-          navigate("/homepage");
+          navigate("/login");
         }, 2000);
       } else {
-        toast.error(result.message || "❌ Si è verificato un errore durante il login");
+        toast.error(
+          result.message || "❌ Si è verificato un errore durante il login"
+        );
       }
     } catch (error) {
       toast.error("❌ Errore durante la connessione al server");
@@ -57,7 +58,10 @@ const Registrazione = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-500">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: `url('images/background.jpg')` }}
+    >
       <div className="w-full max-w-md p-8 space-y-8 bg-gray-200 rounded-xl shadow-lg">
         <h1 className="text-3xl font-bold text-center">Registrazione</h1>
 
@@ -142,7 +146,7 @@ const Registrazione = () => {
 
         <p className="text-center mt-4 text-sm text-gray-600">
           Hai già un account?{" "}
-          <Link to="/" className="text-blue-500 hover:underline">
+          <Link to="/login" className="text-blue-500 hover:underline">
             Accedi qui
           </Link>
         </p>
