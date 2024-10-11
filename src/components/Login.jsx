@@ -8,23 +8,35 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Recupero i dati dal localStorage
-    const storedUserData = localStorage.getItem("userData");
-    const parsedUserData = storedUserData ? JSON.parse(storedUserData) : null;
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (parsedUserData && parsedUserData.email === email) {
-      toast.success("Login avvenuto con successo!🎉");
+      const data = await response.json();
 
-      // Naviga verso la dashboard
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2000);
-    } else {
-      // In caso di errore
-      toast.error("❌ Email o password non corretti.");
+      if (response.ok) {
+        toast.success("Login avvenuto con successo!🎉");
+
+        // Store user data securely (consider not storing passwords)
+        localStorage.setItem("userData", JSON.stringify(data));
+
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
+      } else {
+        toast.error(`❌ ${data.msg || "Email o password non corretti."}`);
+      }
+    } catch (error) {
+      toast.error("❌ Si è verificato un errore durante il login.");
+      console.error("Errore nel login:", error);
     }
   };
 
@@ -43,6 +55,7 @@ const Login = () => {
             </label>
             <input
               type="email"
+              id="email"
               className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
               placeholder="Inserisci email"
               value={email}
@@ -56,6 +69,7 @@ const Login = () => {
             </label>
             <input
               type="password"
+              id="password"
               className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
               placeholder="Inserisci password"
               value={password}
@@ -76,6 +90,10 @@ const Login = () => {
           <Link to="/registrazione" className="text-blue-500 hover:underline">
             Iscriviti
           </Link>
+          <br />
+          <Link to="/" className="text-blue-500 hover:underline">
+            Home
+          </Link>
         </p>
       </div>
     </div>
@@ -83,3 +101,4 @@ const Login = () => {
 };
 
 export default Login;
+

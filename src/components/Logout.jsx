@@ -12,7 +12,7 @@ const Logout = () => {
     navigate("/login");
   }, [navigate]);
 
-  return null; // Non renderizziamo nulla nel DOM
+  return null;
 };
 
 export default Logout;

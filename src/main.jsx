@@ -15,20 +15,21 @@ import Dashboard from "./components/Dashboard";
 import Logout from "./components/Logout";
 
 // Funzione per controllare se l'utente è loggato
+// eslint-disable-next-line no-unused-vars
 function checkIfUserLogged() {
   if (localStorage.getItem("loginData")) {
-    return null; // Permette l'accesso se l'utente è loggato
+    return null;
   } else {
-    return redirect("/login"); // Reindirizza alla pagina di login se non loggato
+    return redirect("/login");
   }
 }
 
 // Funzione per controllare se l'utente non è loggato
 function checkIfUserNotLogged() {
   if (!localStorage.getItem("loginData")) {
-    return null; // Permette l'accesso se l'utente non è loggato
+    return null;
   } else {
-    return redirect("/dashboard"); // Reindirizza alla dashboard se loggato
+    return redirect("/dashboard");
   }
 }
 
@@ -44,7 +45,7 @@ const router = createBrowserRouter([
     loader: checkIfUserNotLogged,
   },
   {
-    path: "/homepage",
+    path: "/",
     element: <Homepage />,
     loader: checkIfUserNotLogged,
   },

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,24 +15,19 @@ const Registrazione = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Controllo che le password corrispondano
     if (password !== confirmPassword) {
       toast.error("Le password non corrispondono!");
       return;
     }
 
-    // Dati per la chiamata di login
-    const loginData = {
-      username: username,
-      email: email,
-      phone: phone,
-    };
+    const registrationData = { username, email, phone, password };
 
     try {
-      const url = "https://66fc0e66c3a184a84d15e4f0.mockapi.io/Users";
-      const response = await fetch(url, {
+      const response = await fetch("http://localhost:3000/registrazione", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(registrationData),
       });
 
       const result = await response.json();
@@ -39,21 +35,19 @@ const Registrazione = () => {
       if (response.ok) {
         toast.success("Registrazione avvenuta con successo!🎉");
 
+        // Store the result directly, including the password
+        localStorage.setItem("userData", JSON.stringify(result));
+
+        // Naviga verso la pagina di login
         setTimeout(() => {
-          // Trasformo i dati ricevuti dal backend in stringa, usando JSON.stringify
-          const resultToString = JSON.stringify(result);
-          // Salvo i dati dell'utente nel localStorage
-          localStorage.setItem("userData", resultToString);
-          // Navigo verso la homepage
-          navigate("/login");
+          navigate("/dashboard");
         }, 2000);
       } else {
-        toast.error(
-          result.message || "❌ Si è verificato un errore durante il login"
-        );
+        toast.error(result.message || "❌ Si è verificato un errore durante la registrazione");
       }
     } catch (error) {
       toast.error("❌ Errore durante la connessione al server");
+      console.error("Errore nella registrazione:", error);
     }
   };
 
@@ -66,75 +60,36 @@ const Registrazione = () => {
         <h1 className="text-3xl font-bold text-center">Registrazione</h1>
 
         <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="username" className="sr-only">
-              Username
-            </label>
-            <input
-              type="text"
-              className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
-              placeholder="Inserisci username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email
-            </label>
-            <input
-              type="email"
-              className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
-              placeholder="inserisci email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="phone" className="sr-only">
-              Phone
-            </label>
-            <input
-              type="phone"
-              className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
-              placeholder="inserisci telefono"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
-              placeholder="Crea una password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="confirmPassword" className="sr-only">
-              Conferma Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
-              placeholder="Conferma la password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
+          <InputField
+            type="text"
+            label="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <InputField
+            type="email"
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <InputField
+            type="tel"
+            label="Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+          <InputField
+            type="password"
+            label="Crea una password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <InputField
+            type="password"
+            label="Conferma Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
 
           <button
             type="submit"
@@ -146,13 +101,26 @@ const Registrazione = () => {
 
         <p className="text-center mt-4 text-sm text-gray-600">
           Hai già un account?{" "}
-          <Link to="/login" className="text-blue-500 hover:underline">
-            Accedi qui
-          </Link>
+          <Link to="/login" className="text-blue-500 hover:underline">Accedi qui</Link>
         </p>
       </div>
     </div>
   );
 };
+
+// Reusable InputField component for better readability
+const InputField = ({ type, label, value, onChange }) => (
+  <div>
+    <label className="sr-only">{label}</label>
+    <input
+      type={type}
+      className="w-full px-4 py-3 rounded-lg border-gray-300 focus:ring-2 focus:ring-indigo-500"
+      placeholder={label}
+      value={value}
+      onChange={onChange}
+      required
+    />
+  </div>
+);
 
 export default Registrazione;
