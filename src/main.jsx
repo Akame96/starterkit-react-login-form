@@ -13,6 +13,8 @@ import Registrazione from "./components/Registrazione";
 import Homepage from "./components/Homepage";
 import Dashboard from "./components/Dashboard";
 import Logout from "./components/Logout";
+import Admin from "./components/Admin";
+import User from "./components/User";
 
 // Funzione per controllare se l'utente è loggato
 // eslint-disable-next-line no-unused-vars
@@ -58,6 +60,14 @@ const router = createBrowserRouter([
     path: "/logout",
     element: <Logout />,
   },
+  {
+    path:"/admin",
+    element:<Admin />
+  },
+  {
+    path:"/user",
+    element:<User />
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
